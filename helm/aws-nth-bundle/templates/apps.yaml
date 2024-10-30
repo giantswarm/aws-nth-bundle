@@ -6,7 +6,7 @@ metadata:
   name: {{ $.Values.clusterID }}-aws-node-termination-handler
   namespace: {{ $.Release.Namespace }}
 spec:
-  catalog: giantswarm-test
+  catalog: giantswarm
   config:
     configMap:
       name: {{ $.Values.clusterID }}-cluster-values
@@ -24,7 +24,7 @@ spec:
       namespace: {{ $.Release.Namespace}}
   name: aws-node-termination-handler
   namespace: kube-system
-  version: 1.19.0-7a77c1418fd1421d4cdf5dcb440b58ee3be74729
+  version: 1.20.0
   extraConfigs:
   - kind: configMap
     name: {{ $.Values.clusterID }}-crossplane-config
@@ -41,19 +41,19 @@ metadata:
   labels:
     app-operator.giantswarm.io/version: 0.0.0
     {{- include "labels.common" $ | nindent 4 }}
-  name: {{ $.Values.clusterID }}-nth-crossplane-resources
+  name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
   namespace: {{ $.Release.Namespace }}
 spec:
-  catalog: giantswarm-test
+  catalog: giantswarm
   install:
     timeout: "10m"
   upgrade:
     timeout: "10m"
   kubeConfig:
     inCluster: true
-  name: nth-crossplane-resources
+  name: aws-nth-crossplane-resources
   namespace: {{ $.Release.Namespace }}
-  version: 0.0.0-3171ffa26b7596cc88cdbcd3533665ba7e30abea
+  version: 1.0.0
   extraConfigs:
   - kind: configMap
     name: {{ $.Values.clusterID }}-crossplane-config
