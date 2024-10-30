@@ -1,12 +1,11 @@
 apiVersion: v2
 appVersion: 0.0.1
-
 name: aws-nth-bundle
 description: AWS Node Termination Handler Crossplane Resources
 home: https://github.com/giantswarm/aws-nth-bundle
 icon: https://s.giantswarm.io/app-icons/aws/2/light.svg
 sources:
-- https://github.com/giantswarm/aws-nth-bundle
-version: 0.0.0-dev
+  - https://github.com/giantswarm/aws-nth-bundle
+version: 1.0.0
 annotations:
   application.giantswarm.io/team: phoenix
