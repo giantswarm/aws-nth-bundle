@@ -1,0 +1,29 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "awsNodeTerminationHandler": {
+            "type": "object"
+        },
+        "clusterID": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "project": {
+            "type": "object",
+            "properties": {
+                "branch": {
+                    "type": "string"
+                },
+                "commit": {
+                    "type": "string"
+                }
+            }
+        },
+        "serviceType": {
+            "type": "string"
+        }
+    }
+}
