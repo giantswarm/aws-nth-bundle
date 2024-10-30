@@ -8,10 +8,10 @@ workflows:
     - architect/push-to-app-catalog:
         context: architect
         executor: app-build-suite
-        name: package-and-push-chart
+        name: Package and push aws-nth-bundle chart
         app_catalog: giantswarm-catalog
         app_catalog_test: giantswarm-test-catalog
-        chart: "aws-nth-bundle"
+        chart: aws-nth-bundle
         filters:
           tags:
             only: /^v.*/
