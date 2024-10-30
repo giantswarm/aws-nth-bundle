@@ -1,0 +1,10 @@
+name: aws-nth-bundle
+serviceType: managed
+
+project:
+  branch: "[[ .Branch ]]"
+  commit: "[[ .SHA ]]"
+
+awsNodeTerminationHandler: {}
+
+clusterID: ""

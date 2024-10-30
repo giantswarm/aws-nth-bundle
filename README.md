@@ -1,70 +1,16 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/giantswarm/{APP-NAME}/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/giantswarm/{APP-NAME}/tree/main)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/giantswarm/aws-nth-bundle/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/giantswarm/aws-nth-bundle/tree/main)
 
-[Read me after cloning this template (GS staff only)](https://handbook.giantswarm.io/docs/dev-and-releng/app-developer-processes/adding_app_to_appcatalog/)
+# AWS Node Termination Handler Bundle
 
-# {APP-NAME} chart
+This app is a bundle that contains 2 Apps:
 
-Giant Swarm offers a {APP-NAME} App which can be installed in workload clusters.
-Here we define the {APP-NAME} chart with its templates and default configuration.
+### Node Termination Handler
+Deployment running on the Workload cluster that will react to Termination events on SQS and drain nodes before sending a signal to continue the Termination.
 
-**What is this app?**
+[Repository](https://github.com/giantswarm/aws-node-termination-handler-app)
 
-**Why did we add it?**
+### Node Termination Handler Crossplane Resources
+Contains AWS resources needed for the Node Termination Handler including IAM Roles, IAM Policies and SQS queue.
 
-**Who can use it?**
+[Repository](https://github.com/giantswarm/aws-nth-crossplane-resources)
 
-## Installing
-
-There are several ways to install this app onto a workload cluster.
-
-- [Using GitOps to instantiate the App](https://docs.giantswarm.io/advanced/gitops/apps/)
-- [Using our web interface](https://docs.giantswarm.io/platform-overview/web-interface/app-platform/#installing-an-app).
-- By creating an [App resource](https://docs.giantswarm.io/use-the-api/management-api/crd/apps.application.giantswarm.io/) in the management cluster as explained in [Getting started with App Platform](https://docs.giantswarm.io/getting-started/app-platform/).
-
-## Configuring
-
-### values.yaml
-
-**This is an example of a values file you could upload using our web interface.**
-
-```yaml
-# values.yaml
-
-```
-
-### Sample App CR and ConfigMap for the management cluster
-
-If you have access to the Kubernetes API on the management cluster, you could create
-the App CR and ConfigMap directly.
-
-Here is an example that would install the app to
-workload cluster `abc12`:
-
-```yaml
-# appCR.yaml
-
-```
-
-```yaml
-# user-values-configmap.yaml
-
-```
-
-See our [full reference on how to configure apps](https://docs.giantswarm.io/getting-started/app-platform/app-configuration/) for more details.
-
-## Compatibility
-
-This app has been tested to work with the following workload cluster release versions:
-
-- _add release version_
-
-## Limitations
-
-Some apps have restrictions on how they can be deployed.
-Not following these limitations will most likely result in a broken deployment.
-
-- _add limitation_
-
-## Credit
-
-- {APP HELM REPOSITORY}
