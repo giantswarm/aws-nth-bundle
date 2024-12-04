@@ -3,6 +3,8 @@ kind: App
 metadata:
   labels:
     {{- include "labels.common" $ | nindent 4 }}
+  annotations:
+    app-operator.giantswarm.io/depends-on: {{ $.Values.clusterID }}-prometheus-operator-crd
   name: {{ $.Values.clusterID }}-aws-node-termination-handler
   namespace: {{ $.Release.Namespace }}
 spec:
