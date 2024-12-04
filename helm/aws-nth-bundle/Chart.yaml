@@ -6,6 +6,6 @@ home: https://github.com/giantswarm/aws-nth-bundle
 icon: https://s.giantswarm.io/app-icons/aws/2/light.svg
 sources:
   - https://github.com/giantswarm/aws-nth-bundle
-version: 1.1.0
+version: 1.1.1
 annotations:
   application.giantswarm.io/team: phoenix
