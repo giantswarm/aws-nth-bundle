@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Add dependency for servicemonitors
+
 ## [1.1.0] - 2024-12-04
 
 ### Changed
