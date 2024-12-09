@@ -2,6 +2,7 @@ apiVersion: application.giantswarm.io/v1alpha1
 kind: App
 metadata:
   labels:
+    app-operator.giantswarm.io/version: 0.0.0
     {{- include "labels.common" $ | nindent 4 }}
   annotations:
     app-operator.giantswarm.io/depends-on: {{ $.Values.clusterID }}-prometheus-operator-crd
@@ -20,7 +21,7 @@ spec:
   kubeConfig:
     inCluster: true
   name: aws-node-termination-handler
-  namespace: kube-system
+  namespace: {{ $.Release.Namespace }}
   version: 1.20.0
   extraConfigs:
   - kind: configMap
