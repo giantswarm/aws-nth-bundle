@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Send spot instance interruption and instance state change events to SQS queue so that aws-node-termination-handler can react to them
+
 ## [1.1.1] - 2024-12-04
 
 ### Changed
