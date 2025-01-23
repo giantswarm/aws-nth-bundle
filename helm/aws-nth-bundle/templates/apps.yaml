@@ -31,6 +31,11 @@ spec:
   - kind: configMap
     name: {{ $.Values.clusterID }}-crossplane-config
     namespace: {{ $.Release.Namespace }}
+{{- if or ($.Values.proxy).httpProxy ($.Values.proxy).httpsProxy ($.Values.proxy).noProxy }}
+  - kind: configMap
+    name: {{ $.Values.clusterID }}-node-termination-handler-proxy
+    namespace: {{ $.Release.Namespace }}
+{{- end }}
 {{- if (($.Values.awsNodeTerminationHandler).values) }}
   - kind: configMap
     name: {{ $.Values.clusterID }}-node-termination-handler-config

@@ -22,6 +22,20 @@
                 }
             }
         },
+        "proxy": {
+            "type": "object",
+            "properties": {
+                "http": {
+                    "type": ["null", "string"]
+                },
+                "https": {
+                    "type": ["null", "string"]
+                },
+                "noProxy": {
+                    "type": ["null", "string"]
+                }
+            }
+        },
         "serviceType": {
             "type": "string"
         }
