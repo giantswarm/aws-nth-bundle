@@ -53,3 +53,19 @@ giantswarm.io/managed-by: {{ .Release.Name | quote }}
 giantswarm.io/service-type: {{ .Values.serviceType }}
 helm.sh/chart: {{ include "chart" . | quote }}
 {{- end -}}
+
+{{- define "aws-nth-bundle.proxyValues" -}}
+extraEnv:
+{{- if .Values.proxy.http }}
+- name: HTTP_PROXY
+  value: {{ .Values.proxy.http | quote }}
+{{- end }}
+{{- if .Values.proxy.https }}
+- name: HTTPS_PROXY
+  value: {{ .Values.proxy.https | quote }}
+{{- end }}
+{{- if .Values.proxy.noProxy }}
+- name: NO_PROXY
+  value: {{ .Values.proxy.noProxy | quote }}
+{{- end }}
+{{ end -}}
