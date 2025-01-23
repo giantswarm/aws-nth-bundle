@@ -10,17 +10,3 @@ data:
   values: |
   {{- (tpl ($.Values.awsNodeTerminationHandler.values | toYaml | toString) $) | nindent 4 }}
 {{- end }}
----
-{{- if or ($.Values.proxy).http ($.Values.proxy).https ($.Values.proxy).noProxy }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  labels:
-    {{- include "labels.common" $ | nindent 4 }}
-  name: {{ $.Values.clusterID }}-node-termination-handler-proxy
-  namespace: {{ $.Release.Namespace }}
-data:
-  values: |
-    extraEnv:
-    {{- include "aws-nth-bundle.proxy" $ | nindent 6 }}
-{{- end }}

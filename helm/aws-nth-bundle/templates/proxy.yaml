@@ -1,0 +1,12 @@
+{{- if or ($.Values.proxy).http ($.Values.proxy).https ($.Values.proxy).noProxy }}
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+  name: {{ $.Values.clusterID }}-node-termination-handler-proxy
+  namespace: {{ $.Release.Namespace }}
+type: Opaque
+data:
+  values: {{ include "aws-nth-bundle.proxyValues" $ | b64enc | quote }}
+{{- end }}

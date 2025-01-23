@@ -32,7 +32,7 @@ spec:
     name: {{ $.Values.clusterID }}-crossplane-config
     namespace: {{ $.Release.Namespace }}
 {{- if or ($.Values.proxy).httpProxy ($.Values.proxy).httpsProxy ($.Values.proxy).noProxy }}
-  - kind: configMap
+  - kind: secret
     name: {{ $.Values.clusterID }}-node-termination-handler-proxy
     namespace: {{ $.Release.Namespace }}
 {{- end }}

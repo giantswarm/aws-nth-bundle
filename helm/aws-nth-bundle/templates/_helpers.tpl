@@ -54,7 +54,8 @@ giantswarm.io/service-type: {{ .Values.serviceType }}
 helm.sh/chart: {{ include "chart" . | quote }}
 {{- end -}}
 
-{{- define "aws-nth-bundle.proxy" -}}
+{{- define "aws-nth-bundle.proxyValues" -}}
+extraEnv:
 {{- if .Values.proxy.http }}
 - name: HTTP_PROXY
   value: {{ .Values.proxy.http | quote }}
@@ -67,4 +68,4 @@ helm.sh/chart: {{ include "chart" . | quote }}
 - name: NO_PROXY
   value: {{ .Values.proxy.noProxy | quote }}
 {{- end }}
-{{- end -}}
+{{ end -}}
