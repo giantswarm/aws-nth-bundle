@@ -26,6 +26,8 @@ spec:
       namespace: {{ $.Release.Namespace}}
   name: aws-node-termination-handler
   namespace: kube-system
+  # used by renovate
+  # repo: giantswarm/aws-node-termination-handler-app
   version: 1.21.0
   extraConfigs:
   - kind: configMap
@@ -60,7 +62,9 @@ spec:
     inCluster: true
   name: aws-nth-crossplane-resources
   namespace: {{ $.Release.Namespace }}
-  version: 1.1.0
+  # used by renovate
+  # repo: giantswarm/aws-nth-crossplane-resources
+  version: 1.1.1
   extraConfigs:
   - kind: configMap
     name: {{ $.Values.clusterID }}-crossplane-config
