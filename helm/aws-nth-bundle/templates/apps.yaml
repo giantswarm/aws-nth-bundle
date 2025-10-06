@@ -28,7 +28,7 @@ spec:
   namespace: kube-system
   # used by renovate
   # repo: giantswarm/aws-node-termination-handler-app
-  version: 1.21.0
+  version: 1.23.0
   extraConfigs:
   - kind: configMap
     name: {{ $.Values.clusterID }}-crossplane-config
