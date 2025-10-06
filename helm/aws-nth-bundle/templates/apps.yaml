@@ -53,7 +53,7 @@ metadata:
   name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
   namespace: {{ $.Release.Namespace }}
 spec:
-  catalog: giantswarm
+  catalog: giantswarm-test
   install:
     timeout: "10m"
   upgrade:
@@ -64,7 +64,7 @@ spec:
   namespace: {{ $.Release.Namespace }}
   # used by renovate
   # repo: giantswarm/aws-nth-crossplane-resources
-  version: 1.2.0
+  version: 1.2.0-bbd20d4d5ec9c4a1305254c8a723f6ed618e2daf
   extraConfigs:
   - kind: configMap
     name: {{ $.Values.clusterID }}-crossplane-config
