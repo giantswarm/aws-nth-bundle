@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-10-07
+
 ### Changed
 
 - Upgrade aws-nth-crossplane-resources to v1.3.0, fixing support for multiple OIDC providers in the NTH IAM role as required for cleanup of migrated vintage clusters, and supporting heartbeat sending
@@ -52,7 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First release
 
-[Unreleased]: https://github.com/giantswarm/aws-nth-bundle/compare/v1.2.3...HEAD
+[Unreleased]: https://github.com/giantswarm/aws-nth-bundle/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/giantswarm/aws-nth-bundle/compare/v1.2.3...v1.3.0
 [1.2.3]: https://github.com/giantswarm/aws-nth-bundle/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/giantswarm/aws-nth-bundle/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/giantswarm/aws-nth-bundle/compare/v1.2.0...v1.2.1
