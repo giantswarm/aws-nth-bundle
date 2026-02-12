@@ -1,0 +1,91 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ $.Values.clusterID }}-aws-node-termination-handler
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+spec:
+  releaseName: aws-node-termination-handler
+  targetNamespace: kube-system
+  storageNamespace: kube-system
+  chart:
+    spec:
+      chart: aws-node-termination-handler
+      # used by renovate
+      # repo: giantswarm/aws-node-termination-handler-app
+      version: 1.23.1
+      sourceRef:
+        kind: HelmRepository
+        name: {{ $.Values.clusterID }}-giantswarm
+  dependsOn:
+  - name: {{ $.Values.clusterID }}-prometheus-operator-crd
+    namespace: {{ $.Release.Namespace }}
+  kubeConfig:
+    secretRef:
+      name: {{ $.Values.clusterID }}-kubeconfig
+  interval: 5m
+  timeout: 10m
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: -1
+  valuesFrom:
+  - kind: ConfigMap
+    name: {{ $.Values.clusterID }}-cluster-values
+    valuesKey: values
+    optional: false
+  - kind: ConfigMap
+    name: {{ $.Values.clusterID }}-crossplane-config
+    valuesKey: values
+    optional: false
+{{- if or ($.Values.proxy).httpProxy ($.Values.proxy).httpsProxy ($.Values.proxy).noProxy }}
+  - kind: Secret
+    name: {{ $.Values.clusterID }}-node-termination-handler-proxy
+    valuesKey: values
+    optional: false
+{{- end }}
+{{- if (($.Values.awsNodeTerminationHandler).values) }}
+  - kind: ConfigMap
+    name: {{ $.Values.clusterID }}-node-termination-handler-config
+    valuesKey: values
+    optional: false
+{{- end }}
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "labels.common" $ | nindent 4 }}
+spec:
+  releaseName: aws-nth-crossplane-resources
+  targetNamespace: {{ $.Release.Namespace }}
+  storageNamespace: {{ $.Release.Namespace }}
+  chart:
+    spec:
+      chart: aws-nth-crossplane-resources
+      # used by renovate
+      # repo: giantswarm/aws-nth-crossplane-resources
+      version: 1.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: {{ $.Values.clusterID }}-giantswarm
+  serviceAccountName: automation
+  interval: 5m
+  timeout: 10m
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: -1
+  valuesFrom:
+  - kind: ConfigMap
+    name: {{ $.Values.clusterID }}-crossplane-config
+    valuesKey: values
+    optional: false
