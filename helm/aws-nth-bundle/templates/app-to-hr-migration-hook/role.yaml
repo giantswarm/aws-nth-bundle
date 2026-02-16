@@ -16,3 +16,6 @@ rules:
   resourceNames:
   - {{ $.Values.clusterID }}-kubeconfig
   - {{ $.Values.managementCluster }}-kubeconfig
+- apiGroups: ["application.giantswarm.io"]
+  resources: ["apps"]
+  verbs: ["get", "patch", "delete"]
