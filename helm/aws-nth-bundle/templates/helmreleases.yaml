@@ -1,5 +1,5 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
   name: {{ $.Values.clusterID }}-aws-node-termination-handler
@@ -65,7 +65,7 @@ spec:
     optional: false
 {{- end }}
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
   name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
