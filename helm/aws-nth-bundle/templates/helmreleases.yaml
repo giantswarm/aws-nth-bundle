@@ -36,10 +36,11 @@ spec:
     secretRef:
       name: {{ $.Values.clusterID }}-kubeconfig
   interval: 1m
-  timeout: 10m
+  timeout: 15m
   install:
     remediation:
       retries: -1
+      remediateLastFailure: false
   upgrade:
     remediation:
       retries: 0
