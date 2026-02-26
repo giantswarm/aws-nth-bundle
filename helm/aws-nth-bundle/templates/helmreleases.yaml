@@ -91,7 +91,7 @@ metadata:
   labels:
     {{- include "labels.common" $ | nindent 4 }}
 spec:
-  releaseName: aws-nth-crossplane-resources
+  releaseName: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
   targetNamespace: {{ $.Release.Namespace }}
   storageNamespace: {{ $.Release.Namespace }}
   chartRef:
