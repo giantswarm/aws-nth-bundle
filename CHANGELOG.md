@@ -10,8 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Migrate sub-apps from App CRs to Flux HelmRelease CRs.
-- Add pre-upgrade migration hook to safely clean up Chart CRs during the transition.
-- Add `managementCluster` value for MC kubeconfig access in migration hook.
 
 ## [1.3.0] - 2025-10-07
 
