@@ -21,6 +21,7 @@ workflows:
           app_catalog: default-catalog
           app_catalog_test: default-test-catalog
           chart: aws-node-termination-handler
+          explicit_allow_chart_name_mismatch: true
           ct_config: ".circleci/ct-config.yaml"
           <<: *job_filters
 
@@ -31,5 +32,4 @@ workflows:
           app_catalog: default-catalog
           app_catalog_test: default-test-catalog
           chart: aws-nth-bundle
-          explicit_allow_chart_name_mismatch: true
           <<: *job_filters
