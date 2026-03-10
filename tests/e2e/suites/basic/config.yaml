@@ -1,0 +1,9 @@
+appName: "aws-nth-bundle"
+repoName: "aws-nth-bundle"
+appCatalog: "default"
+
+providers:
+  - capa
+
+helmReleaseSourceRef:
+  name: default-test-catalog

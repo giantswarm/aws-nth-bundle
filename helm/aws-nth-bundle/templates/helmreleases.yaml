@@ -1,0 +1,46 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aws-nth-bundle.labels" . | nindent 4 }}
+spec:
+  interval: 5m
+  url: {{ .Values.ociRepositoryUrl }}
+  ref:
+    semver: "*"
+  provider: generic
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aws-nth-bundle.labels" . | nindent 4 }}
+spec:
+  releaseName: aws-node-termination-handler
+  targetNamespace: kube-system
+  storageNamespace: kube-system
+  chart:
+    spec:
+      chart: aws-node-termination-handler
+      sourceRef:
+        kind: OCIRepository
+        name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler
+  kubeConfig:
+    secretRef:
+      name: {{ include "aws-nth-bundle.clusterID" . }}-kubeconfig
+  dependsOn:
+  - name: {{ include "aws-nth-bundle.clusterID" . }}-cloud-provider-aws
+  interval: 5m
+  install:
+    remediation:
+      retries: 30
+  upgrade:
+    remediation:
+      retries: 30
+  valuesFrom:
+  - kind: ConfigMap
+    name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler-config
