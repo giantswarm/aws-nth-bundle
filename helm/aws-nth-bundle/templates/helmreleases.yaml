@@ -1,46 +1,113 @@
+---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
-  name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler
-  namespace: {{ .Release.Namespace }}
+  name: {{ $.Values.clusterID }}-aws-node-termination-handler
+  namespace: {{ $.Release.Namespace }}
   labels:
-    {{- include "aws-nth-bundle.labels" . | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
 spec:
-  interval: 5m
-  url: {{ .Values.ociRepositoryUrl }}
+  url: oci://gsoci.azurecr.io/charts/giantswarm/aws-node-termination-handler
   ref:
-    semver: "*"
-  provider: generic
+    # used by renovate
+    # repo: giantswarm/aws-node-termination-handler-app
+    tag: "1.23.1"
+  interval: 24h
+  timeout: 60s
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler
-  namespace: {{ .Release.Namespace }}
+  name: {{ $.Values.clusterID }}-aws-node-termination-handler
+  namespace: {{ $.Release.Namespace }}
   labels:
-    {{- include "aws-nth-bundle.labels" . | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
 spec:
   releaseName: aws-node-termination-handler
   targetNamespace: kube-system
   storageNamespace: kube-system
-  chart:
-    spec:
-      chart: aws-node-termination-handler
-      sourceRef:
-        kind: OCIRepository
-        name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler
+  chartRef:
+    kind: OCIRepository
+    name: {{ $.Values.clusterID }}-aws-node-termination-handler
+  dependsOn:
+  - name: {{ $.Values.clusterID }}-prometheus-operator-crd
+    namespace: {{ $.Release.Namespace }}
   kubeConfig:
     secretRef:
-      name: {{ include "aws-nth-bundle.clusterID" . }}-kubeconfig
-  dependsOn:
-  - name: {{ include "aws-nth-bundle.clusterID" . }}-cloud-provider-aws
-  interval: 5m
+      name: {{ $.Values.clusterID }}-kubeconfig
+  interval: 1m
+  timeout: 15m
   install:
     remediation:
-      retries: 30
+      retries: -1
+      remediateLastFailure: false
   upgrade:
     remediation:
-      retries: 30
+      retries: 0
+      remediateLastFailure: false
   valuesFrom:
   - kind: ConfigMap
-    name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler-config
+    name: {{ $.Values.clusterID }}-cluster-values
+    valuesKey: values
+    optional: false
+  - kind: ConfigMap
+    name: {{ $.Values.clusterID }}-crossplane-config
+    valuesKey: values
+    optional: false
+{{- if or ($.Values.proxy).httpProxy ($.Values.proxy).httpsProxy ($.Values.proxy).noProxy }}
+  - kind: Secret
+    name: {{ $.Values.clusterID }}-node-termination-handler-proxy
+    valuesKey: values
+    optional: false
+{{- end }}
+{{- if (($.Values.awsNodeTerminationHandler).values) }}
+  - kind: ConfigMap
+    name: {{ $.Values.clusterID }}-node-termination-handler-config
+    valuesKey: values
+    optional: false
+{{- end }}
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
+spec:
+  url: oci://gsoci.azurecr.io/charts/giantswarm/aws-nth-crossplane-resources
+  ref:
+    # used by renovate
+    # repo: giantswarm/aws-nth-crossplane-resources
+    tag: "1.3.2"
+  interval: 24h
+  timeout: 60s
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
+spec:
+  releaseName: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
+  targetNamespace: {{ $.Release.Namespace }}
+  storageNamespace: {{ $.Release.Namespace }}
+  chartRef:
+    kind: OCIRepository
+    name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
+  serviceAccountName: automation
+  interval: 1m
+  timeout: 10m
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: -1
+  valuesFrom:
+  - kind: ConfigMap
+    name: {{ $.Values.clusterID }}-crossplane-config
+    valuesKey: values
+    optional: false

@@ -2,6 +2,8 @@ module e2e
 
 go 1.25.7
 
+toolchain go1.25.8
+
 require (
 	github.com/fluxcd/helm-controller/api v1.4.5
 	github.com/giantswarm/apptest-framework/v3 v3.1.1
