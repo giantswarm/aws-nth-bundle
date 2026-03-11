@@ -1,10 +1,12 @@
+{{- if (($.Values.awsNodeTerminationHandler).values) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "aws-nth-bundle.clusterID" . }}-aws-node-termination-handler-config
-  namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "aws-nth-bundle.labels" . | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
+  name: {{ $.Values.clusterID }}-node-termination-handler-config
+  namespace: {{ $.Release.Namespace }}
 data:
   values: |
-  {{- (include "giantswarm.workloadValues" .) | nindent 4 }}
+  {{- (tpl ($.Values.awsNodeTerminationHandler.values | toYaml | toString) $) | nindent 4 }}
+{{- end }}

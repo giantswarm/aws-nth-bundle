@@ -69,8 +69,6 @@ Fetch crossplane config ConfigMap data
 {{- $cmvalues := dict -}}
 {{- if and $configmap $configmap.data $configmap.data.values -}}
   {{- $cmvalues = fromYaml $configmap.data.values -}}
-{{- else -}}
-  {{- fail (printf "Crossplane config ConfigMap %s-crossplane-config not found in namespace %s or has no data" $clusterName .Release.Namespace) -}}
 {{- end -}}
 {{- $cmvalues | toYaml -}}
 {{- end -}}
@@ -80,7 +78,10 @@ Get trust policy statements for all provided OIDC domains
 */}}
 {{- define "aws-nth-bundle.trustPolicyStatements" -}}
 {{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- $saName := default (include "aws-nth-bundle.fullname" .) .Values.serviceAccount.name -}}
+{{- $saName := include "aws-nth-bundle.fullname" . -}}
+{{- if and .Values.serviceAccount .Values.serviceAccount.name -}}
+  {{- $saName = .Values.serviceAccount.name -}}
+{{- end -}}
 {{- range $index, $oidcDomain := $cmvalues.oidcDomains -}}
 {{- if not (eq $index 0) }}, {{ end }}{
   "Effect": "Allow",
@@ -98,70 +99,20 @@ Get trust policy statements for all provided OIDC domains
 {{- end -}}
 
 {{/*
-Set Giant Swarm specific values — computes IRSA role ARN and SQS queue URL.
+Proxy values for aws-node-termination-handler
 */}}
-{{- define "giantswarm.setValues" -}}
-{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- $clusterID := (include "aws-nth-bundle.clusterID" .) -}}
-{{- $_ := set .Values.serviceAccount.annotations "eks.amazonaws.com/role-arn" (printf "arn:%s:iam::%s:role/%s-nth" $cmvalues.awsPartition $cmvalues.accountID $clusterID) -}}
-{{- if not .Values.queueURL -}}
-{{- $_ := set .Values "queueURL" (printf "%s-nth" $clusterID) -}}
-{{- end -}}
-{{- if and (not .Values.clusterName) -}}
-{{- $_ := set .Values "clusterName" $clusterID -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Reusable: combine GS split registry+name into upstream single repository.
-Note: GS uses image.name (not image.repository), so we combine registry+name.
-*/}}
-{{- define "giantswarm.combineImage" -}}
-{{- $result := deepCopy . -}}
-{{- if .name -}}
-{{- $_ := set $result "repository" (printf "%s/%s" .registry .name) -}}
-{{- $_ := unset $result "registry" -}}
-{{- $_ := unset $result "name" -}}
-{{- else -}}
-{{- $_ := set $result "repository" (printf "%s/%s" .registry .repository) -}}
-{{- $_ := unset $result "registry" -}}
-{{- end -}}
-{{- $result | toYaml -}}
-{{- end -}}
-
-{{/*
-Transform flat bundle values into the nested workload chart structure.
-*/}}
-{{- define "giantswarm.workloadValues" -}}
-{{- include "giantswarm.setValues" . -}}
-{{- $upstreamValues := dict -}}
-
-{{/* Keys that belong to the bundle chart itself (never forwarded) */}}
-{{- $bundleOnlyKeys := list "ociRepositoryUrl" "clusterID" "clusterName" -}}
-{{/* Keys forwarded as workload extras (not under upstream:) */}}
-{{- $extrasKeys := list "networkPolicy" "verticalPodAutoscaler" "global" -}}
-{{/* Keys with special handling */}}
-{{- $specialKeys := list "image" -}}
-{{- $reservedKeys := concat $bundleOnlyKeys $extrasKeys $specialKeys -}}
-
-{{/* Image: combine GS split format */}}
-{{- $_ := set $upstreamValues "image" (include "giantswarm.combineImage" .Values.image | fromYaml) -}}
-
-{{/* Preserve the original chart name for selector compatibility */}}
-{{- $_ := set $upstreamValues "nameOverride" "aws-node-termination-handler" -}}
-
-{{/* Pass through any non-reserved value to upstream */}}
-{{- range $key, $val := .Values -}}
-  {{- if not (has $key $reservedKeys) -}}
-  {{- $_ := set $upstreamValues $key $val -}}
-  {{- end -}}
-{{- end -}}
-
-{{/* Assemble workload values: upstream + extras */}}
-{{- $workloadValues := dict "upstream" $upstreamValues -}}
-{{- $_ := set $workloadValues "networkPolicy" .Values.networkPolicy -}}
-{{- $_ := set $workloadValues "verticalPodAutoscaler" .Values.verticalPodAutoscaler -}}
-{{- $_ := set $workloadValues "global" .Values.global -}}
-
-{{- $workloadValues | toYaml -}}
-{{- end -}}
+{{- define "aws-nth-bundle.proxyValues" -}}
+extraEnv:
+{{- if .Values.proxy.httpProxy }}
+- name: HTTP_PROXY
+  value: {{ .Values.proxy.httpProxy | quote }}
+{{- end }}
+{{- if .Values.proxy.httpsProxy }}
+- name: HTTPS_PROXY
+  value: {{ .Values.proxy.httpsProxy | quote }}
+{{- end }}
+{{- if .Values.proxy.noProxy }}
+- name: NO_PROXY
+  value: {{ .Values.proxy.noProxy | quote }}
+{{- end }}
+{{ end -}}
