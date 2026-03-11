@@ -1,8 +1,3 @@
-{{- $cmvalues := dict -}}
-{{- $configmap := (lookup "v1" "ConfigMap" $.Release.Namespace (printf "%s-crossplane-config" $.Values.clusterID)) -}}
-{{- if and $configmap $configmap.data $configmap.data.values -}}
-  {{- $cmvalues = fromYaml $configmap.data.values -}}
-{{- end -}}
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
@@ -51,10 +46,6 @@ spec:
     enableSqsTerminationDraining: true
     queueURL: {{ $.Values.clusterID }}-nth
     clusterName: {{ $.Values.clusterID }}
-    serviceAccount:
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:{{ $cmvalues.awsPartition | default "aws" }}:iam::{{ $cmvalues.accountID | default "" }}:role/{{ $.Values.clusterID }}-nth
   valuesFrom:
   - kind: ConfigMap
     name: {{ $.Values.clusterID }}-cluster-values
