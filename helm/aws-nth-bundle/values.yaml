@@ -8,3 +8,4 @@ project:
 awsNodeTerminationHandler: {}
 
 clusterID: ""
+managementCluster: ""
