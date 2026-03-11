@@ -15,9 +15,9 @@ spec:
         "Statement": [{{ include "aws-nth-bundle.trustPolicyStatements" . }}]
       }
     tags:
-    - key: giantswarm.io/cluster
+    - key: "giantswarm.io/cluster"
       value: {{ $clusterID }}
-    - key: sigs.k8s.io/cluster-api-provider-aws/cluster/{{ $clusterID }}
+    - key: "sigs.k8s.io/cluster-api-provider-aws/cluster/{{ $clusterID }}"
       value: owned
   providerConfigRef:
     name: {{ $clusterID }}
