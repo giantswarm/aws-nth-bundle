@@ -12,7 +12,9 @@ spec:
     assumeRolePolicyDocument: |
       {
         "Version": "2012-10-17",
-        "Statement": [{{ include "aws-nth-bundle.trustPolicyStatements" . }}]
+        "Statement": [
+          {{ include "aws-nth-bundle.trustPolicyStatements" . | nindent 10 }}
+        ]
       }
     tags:
     - key: "giantswarm.io/cluster"
