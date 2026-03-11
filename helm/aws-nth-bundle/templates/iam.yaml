@@ -9,7 +9,7 @@ metadata:
     {{- include "aws-nth-bundle.labels" . | nindent 4 }}
 spec:
   forProvider:
-    assumeRolePolicyDocument: |
+    assumeRolePolicy: |
       {
         "Version": "2012-10-17",
         "Statement": [
@@ -32,7 +32,7 @@ metadata:
 spec:
   forProvider:
     policyArn: arn:{{ $cmvalues.awsPartition }}:iam::aws:policy/AmazonSQSReadOnlyAccess
-    roleNameRef:
+    roleRef:
       name: {{ $clusterID }}-nth
   providerConfigRef:
     name: {{ $clusterID }}
@@ -47,7 +47,7 @@ metadata:
 spec:
   forProvider:
     policyArn: arn:{{ $cmvalues.awsPartition }}:iam::aws:policy/AutoScalingReadOnlyAccess
-    roleNameRef:
+    roleRef:
       name: {{ $clusterID }}-nth
   providerConfigRef:
     name: {{ $clusterID }}
