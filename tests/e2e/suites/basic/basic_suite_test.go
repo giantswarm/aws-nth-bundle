@@ -7,9 +7,9 @@ import (
 
 	"e2e/internal/testhelpers"
 
-	"github.com/giantswarm/apptest-framework/v2/pkg/state"
-	"github.com/giantswarm/apptest-framework/v2/pkg/suite"
-	"github.com/giantswarm/clustertest/v2/pkg/failurehandler"
+	"github.com/giantswarm/apptest-framework/v3/pkg/state"
+	"github.com/giantswarm/apptest-framework/v3/pkg/suite"
+	"github.com/giantswarm/clustertest/v3/pkg/failurehandler"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
