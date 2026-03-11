@@ -53,7 +53,6 @@ spec:
     clusterName: {{ $.Values.clusterID }}
     serviceAccount:
       create: true
-      name: aws-node-termination-handler
       annotations:
         eks.amazonaws.com/role-arn: arn:{{ $cmvalues.awsPartition | default "aws" }}:iam::{{ $cmvalues.accountID | default "" }}:role/{{ $.Values.clusterID }}-nth
   valuesFrom:

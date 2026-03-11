@@ -78,10 +78,7 @@ Get trust policy statements for all provided OIDC domains
 */}}
 {{- define "aws-nth-bundle.trustPolicyStatements" -}}
 {{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- $saName := include "aws-nth-bundle.fullname" . -}}
-{{- if and .Values.serviceAccount .Values.serviceAccount.name -}}
-  {{- $saName = .Values.serviceAccount.name -}}
-{{- end -}}
+{{- $saName := "aws-node-termination-handler" -}}
 {{- range $index, $oidcDomain := $cmvalues.oidcDomains -}}
 {{- if not (eq $index 0) }}, {{ end }}{
   "Effect": "Allow",
