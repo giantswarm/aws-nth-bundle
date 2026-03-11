@@ -29,9 +29,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: {{ $.Values.clusterID }}-aws-node-termination-handler
-  dependsOn:
-  - name: {{ $.Values.clusterID }}-prometheus-operator-crd
-    namespace: {{ $.Release.Namespace }}
   kubeConfig:
     secretRef:
       name: {{ $.Values.clusterID }}-kubeconfig
