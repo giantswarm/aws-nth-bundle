@@ -17,10 +17,8 @@ spec:
         ]
       }
     tags:
-    - key: "giantswarm.io/cluster"
-      value: {{ $clusterID }}
-    - key: "sigs.k8s.io/cluster-api-provider-aws/cluster/{{ $clusterID }}"
-      value: owned
+      "giantswarm.io/cluster": {{ $clusterID }}
+      "sigs.k8s.io/cluster-api-provider-aws/cluster/{{ $clusterID }}": owned
   providerConfigRef:
     name: {{ $clusterID }}
 ---
