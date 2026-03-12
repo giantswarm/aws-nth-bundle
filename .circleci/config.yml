@@ -2,20 +2,34 @@ version: 2.1
 orbs:
   architect: giantswarm/architect@6.14.1
 
+job_filters: &job_filters
+  filters:
+    tags:
+      only: /^v.*/
+    branches:
+      ignore:
+        - main
+        - master
+
 workflows:
   package-and-push-chart-on-tag:
     jobs:
-    - architect/push-to-app-catalog:
-        context: architect
-        executor: app-build-suite
-        name: Package and push aws-nth-bundle chart
-        app_catalog: default-catalog
-        app_catalog_test: default-test-catalog
-        chart: aws-nth-bundle
-        filters:
-          tags:
-            only: /^v.*/
-          branches:
-            ignore:
-            - main
-            - master
+      - architect/push-to-app-catalog:
+          context: architect
+          executor: app-build-suite
+          name: package and push aws-node-termination-handler chart
+          app_catalog: default-catalog
+          app_catalog_test: default-test-catalog
+          chart: aws-node-termination-handler
+          explicit_allow_chart_name_mismatch: true
+          ct_config: ".circleci/ct-config.yaml"
+          <<: *job_filters
+
+      - architect/push-to-app-catalog:
+          context: architect
+          executor: app-build-suite
+          name: package and push aws-nth-bundle chart
+          app_catalog: default-catalog
+          app_catalog_test: default-test-catalog
+          chart: aws-nth-bundle
+          <<: *job_filters

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    {{- include "labels.common" $ | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
   name: {{ $.Values.clusterID }}-node-termination-handler-config
   namespace: {{ $.Release.Namespace }}
 data:

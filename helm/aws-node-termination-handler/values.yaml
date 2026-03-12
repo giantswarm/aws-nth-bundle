@@ -1,0 +1,20 @@
+# --- UPSTREAM -------------------------------------------------------------------
+upstream:
+  nameOverride: aws-node-termination-handler
+
+# --- EXTRAS ---------------------------------------------------------------------
+networkPolicy:
+  enabled: true
+
+verticalPodAutoscaler:
+  enabled: true
+  maxAllowed:
+    cpu: 200m
+    memory: 200Mi
+  minAllowed:
+    cpu: 50m
+    memory: 50Mi
+
+global:
+  podSecurityStandards:
+    enforced: true

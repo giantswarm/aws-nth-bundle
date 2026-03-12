@@ -1,0 +1,28 @@
+{{- if .Values.global.podSecurityStandards.enforced }}
+apiVersion: kyverno.io/v2beta1
+kind: PolicyException
+metadata:
+  name: {{ .Release.Name }}-aws-node-termination-handler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aws-node-termination-handler.labels" . | nindent 4 }}
+spec:
+  exceptions:
+  - policyName: disallow-host-path
+    ruleNames:
+    - host-path
+    - autogen-host-path
+  - policyName: restrict-volume-types
+    ruleNames:
+    - restricted-volumes
+    - autogen-restricted-volumes
+  match:
+    any:
+    - resources:
+        namespaces:
+        - {{ .Release.Namespace }}
+        names:
+        - {{ .Release.Name }}-aws-node-termination-handler-*
+        kinds:
+        - Pod
+{{- end }}
