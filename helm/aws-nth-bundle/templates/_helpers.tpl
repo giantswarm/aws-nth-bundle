@@ -61,6 +61,32 @@ giantswarm.io/cluster: {{ include "aws-nth-bundle.clusterID" . | quote }}
 {{- end -}}
 
 {{/*
+Fetch crossplane config ConfigMap data
+*/}}
+{{- define "aws-nth-bundle.crossplaneConfigData" -}}
+{{- $clusterName := (include "aws-nth-bundle.clusterID" .) -}}
+{{- $configmap := (lookup "v1" "ConfigMap" .Release.Namespace (printf "%s-crossplane-config" $clusterName)) -}}
+{{- $cmvalues := dict -}}
+{{- if and $configmap $configmap.data $configmap.data.values -}}
+  {{- $cmvalues = fromYaml $configmap.data.values -}}
+{{- end -}}
+{{- $cmvalues | toYaml -}}
+{{- end -}}
+
+{{/*
+Full SQS queue URL for NTH
+*/}}
+{{- define "aws-nth-bundle.queueURL" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- $clusterName := (include "aws-nth-bundle.clusterID" .) -}}
+{{- if and $cmvalues $cmvalues.region $cmvalues.accountID -}}
+https://sqs.{{ $cmvalues.region }}.amazonaws.com/{{ $cmvalues.accountID }}/{{ $clusterName }}-nth
+{{- else -}}
+{{ $clusterName }}-nth
+{{- end -}}
+{{- end -}}
+
+{{/*
 Proxy values for aws-node-termination-handler
 */}}
 {{- define "aws-nth-bundle.proxyValues" -}}

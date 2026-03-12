@@ -46,6 +46,9 @@ spec:
     enableSqsTerminationDraining: true
     queueURL: {{ $.Values.clusterID }}-nth
     clusterName: {{ $.Values.clusterID }}
+    extraEnv:
+    - name: QUEUE_URL
+      value: {{ include "aws-nth-bundle.queueURL" $ | trim | quote }}
   valuesFrom:
   - kind: ConfigMap
     name: {{ $.Values.clusterID }}-cluster-values
