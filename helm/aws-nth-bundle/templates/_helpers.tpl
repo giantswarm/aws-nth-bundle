@@ -61,41 +61,6 @@ giantswarm.io/cluster: {{ include "aws-nth-bundle.clusterID" . | quote }}
 {{- end -}}
 
 {{/*
-Fetch crossplane config ConfigMap data
-*/}}
-{{- define "aws-nth-bundle.crossplaneConfigData" -}}
-{{- $clusterName := (include "aws-nth-bundle.clusterID" .) -}}
-{{- $configmap := (lookup "v1" "ConfigMap" .Release.Namespace (printf "%s-crossplane-config" $clusterName)) -}}
-{{- $cmvalues := dict -}}
-{{- if and $configmap $configmap.data $configmap.data.values -}}
-  {{- $cmvalues = fromYaml $configmap.data.values -}}
-{{- end -}}
-{{- $cmvalues | toYaml -}}
-{{- end -}}
-
-{{/*
-Get trust policy statements for all provided OIDC domains
-*/}}
-{{- define "aws-nth-bundle.trustPolicyStatements" -}}
-{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- $saName := "aws-node-termination-handler" -}}
-{{- range $index, $oidcDomain := $cmvalues.oidcDomains -}}
-{{- if not (eq $index 0) }}, {{ end }}{
-  "Effect": "Allow",
-  "Principal": {
-    "Federated": "arn:{{ $cmvalues.awsPartition }}:iam::{{ $cmvalues.accountID }}:oidc-provider/{{ $oidcDomain }}"
-  },
-  "Action": "sts:AssumeRoleWithWebIdentity",
-  "Condition": {
-    "StringLike": {
-      "{{ $oidcDomain }}:sub": "system:serviceaccount:kube-system:{{ $saName }}"
-    }
-  }
-}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Proxy values for aws-node-termination-handler
 */}}
 {{- define "aws-nth-bundle.proxyValues" -}}
