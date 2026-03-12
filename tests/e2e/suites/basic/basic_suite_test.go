@@ -14,6 +14,8 @@ import (
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	capiexp "sigs.k8s.io/cluster-api/exp/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -169,14 +171,37 @@ func TestBasic(t *testing.T) {
 
 			It("should scale down the MachinePool", func() {
 				mcClient := state.GetFramework().MC()
-				mp := &capiexp.MachinePool{}
+
+				// Update AWSMachinePool minSize/maxSize to allow the scale-down
+				awsMP := &unstructured.Unstructured{}
+				awsMP.SetGroupVersionKind(schema.GroupVersionKind{
+					Group:   "infrastructure.cluster.x-k8s.io",
+					Version: "v1beta2",
+					Kind:    "AWSMachinePool",
+				})
 				err := mcClient.Get(state.GetContext(), types.NamespacedName{
+					Name:      machinePoolName,
+					Namespace: machinePoolNS,
+				}, awsMP)
+				Expect(err).NotTo(HaveOccurred())
+
+				newReplicas := initialReplicas - 1
+				err = unstructured.SetNestedField(awsMP.Object, int64(newReplicas), "spec", "minSize")
+				Expect(err).NotTo(HaveOccurred())
+				err = unstructured.SetNestedField(awsMP.Object, int64(newReplicas), "spec", "maxSize")
+				Expect(err).NotTo(HaveOccurred())
+				err = mcClient.Update(state.GetContext(), awsMP)
+				Expect(err).NotTo(HaveOccurred())
+				GinkgoLogr.Info("AWSMachinePool minSize/maxSize updated", "to", newReplicas)
+
+				// Scale down MachinePool replicas
+				mp := &capiexp.MachinePool{}
+				err = mcClient.Get(state.GetContext(), types.NamespacedName{
 					Name:      machinePoolName,
 					Namespace: machinePoolNS,
 				}, mp)
 				Expect(err).NotTo(HaveOccurred())
 
-				newReplicas := initialReplicas - 1
 				mp.Spec.Replicas = &newReplicas
 				err = mcClient.Update(state.GetContext(), mp)
 				Expect(err).NotTo(HaveOccurred())
