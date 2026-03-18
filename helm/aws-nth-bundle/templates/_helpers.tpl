@@ -91,13 +91,13 @@ Proxy values for aws-node-termination-handler
 */}}
 {{- define "aws-nth-bundle.proxyValues" -}}
 extraEnv:
-{{- if .Values.proxy.httpProxy }}
+{{- if .Values.proxy.http }}
 - name: HTTP_PROXY
-  value: {{ .Values.proxy.httpProxy | quote }}
+  value: {{ .Values.proxy.http | quote }}
 {{- end }}
-{{- if .Values.proxy.httpsProxy }}
+{{- if .Values.proxy.https }}
 - name: HTTPS_PROXY
-  value: {{ .Values.proxy.httpsProxy | quote }}
+  value: {{ .Values.proxy.https | quote }}
 {{- end }}
 {{- if .Values.proxy.noProxy }}
 - name: NO_PROXY
