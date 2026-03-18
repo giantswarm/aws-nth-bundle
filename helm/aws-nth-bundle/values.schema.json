@@ -5,6 +5,12 @@
     "properties": {
         "ociRepositoryUrl": {
             "type": "string"
+        },
+        "clusterID": {
+            "type": "string"
+        },
+        "managementCluster": {
+            "type": "string"
         }
     }
 }
