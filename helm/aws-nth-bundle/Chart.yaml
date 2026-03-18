@@ -7,3 +7,4 @@ home: https://github.com/giantswarm/aws-nth-bundle
 icon: https://s.giantswarm.io/app-icons/aws/2/light.svg
 annotations:
   application.giantswarm.io/team: "phoenix"
+  io.giantswarm.application.restrictions.compatible-providers: "aws"
