@@ -1,3 +1,2 @@
 ---
-chart-repos:
-- aws-node-termination-handler=https://aws.github.io/eks-charts
+chart-repos: []

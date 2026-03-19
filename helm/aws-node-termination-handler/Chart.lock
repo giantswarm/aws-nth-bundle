@@ -1,6 +1,6 @@
 dependencies:
 - name: aws-node-termination-handler
-  repository: https://aws.github.io/eks-charts
-  version: 0.21.0
-digest: sha256:99bfb681e64e9298e2c5751e5203b12579ec6f5e45817b56c4e821194e51aa90
-generated: "2026-03-05T09:03:20.790557+01:00"
+  repository: oci://public.ecr.aws/aws-ec2/helm
+  version: 0.27.5
+digest: sha256:4c4e48439d91d36f6409f35c05221e7baff70b5cf33c5ab446c0d7fe8e369044
+generated: "2026-03-19T10:09:59.108333+01:00"

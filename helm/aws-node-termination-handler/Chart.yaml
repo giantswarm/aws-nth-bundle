@@ -14,5 +14,5 @@ annotations:
 dependencies:
   - name: aws-node-termination-handler
     alias: upstream
-    version: "0.21.0"
-    repository: "https://aws.github.io/eks-charts"
+    version: "0.27.5"
+    repository: "oci://public.ecr.aws/aws-ec2/helm"
