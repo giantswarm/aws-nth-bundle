@@ -45,11 +45,9 @@ spec:
     remediation:
       retries: 0
       remediateLastFailure: false
+  values:
+    clusterID: {{ $.Values.clusterID }}
   valuesFrom:
-  - kind: ConfigMap
-    name: {{ $.Values.clusterID }}-cluster-values
-    valuesKey: values
-    optional: false
   - kind: ConfigMap
     name: {{ $.Values.clusterID }}-crossplane-config
     valuesKey: values
