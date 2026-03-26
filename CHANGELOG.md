@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `cluster.x-k8s.io/cluster-name` label to the HelmReleases.
+
 ## [1.4.0] - 2026-03-24
 
 ### Changed
