@@ -3,4 +3,10 @@
     // Base config - https://github.com/giantswarm/renovate-presets/blob/main/default.json5
     "github>giantswarm/renovate-presets:default.json5",
   ],
+  "packageRules": [
+    {
+      "matchFileNames": ["helm/aws-node-termination-handler/values.yaml", "helm/aws-nth-bundle/values.yaml"],
+      "enabled": false,
+    },
+  ],
 }

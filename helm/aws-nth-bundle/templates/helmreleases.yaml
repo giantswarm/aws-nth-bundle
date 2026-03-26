@@ -5,7 +5,7 @@ metadata:
   name: {{ $.Values.clusterID }}-aws-node-termination-handler
   namespace: {{ $.Release.Namespace }}
   labels:
-    {{- include "labels.common" $ | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
 spec:
   url: oci://gsoci.azurecr.io/charts/giantswarm/aws-node-termination-handler
   ref:
@@ -21,7 +21,7 @@ metadata:
   name: {{ $.Values.clusterID }}-aws-node-termination-handler
   namespace: {{ $.Release.Namespace }}
   labels:
-    {{- include "labels.common" $ | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
 spec:
   releaseName: aws-node-termination-handler
   targetNamespace: kube-system
@@ -29,9 +29,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: {{ $.Values.clusterID }}-aws-node-termination-handler
-  dependsOn:
-  - name: {{ $.Values.clusterID }}-prometheus-operator-crd
-    namespace: {{ $.Release.Namespace }}
   kubeConfig:
     secretRef:
       name: {{ $.Values.clusterID }}-kubeconfig
@@ -47,6 +44,12 @@ spec:
       remediateLastFailure: false
   values:
     clusterID: {{ $.Values.clusterID }}
+    enableSqsTerminationDraining: true
+    queueURL: {{ $.Values.clusterID }}-nth
+    clusterName: {{ $.Values.clusterID }}
+    extraEnv:
+    - name: QUEUE_URL
+      value: {{ include "aws-nth-bundle.queueURL" $ | trim | quote }}
   valuesFrom:
   - kind: ConfigMap
     name: {{ $.Values.clusterID }}-crossplane-config
@@ -71,7 +74,7 @@ metadata:
   name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
   namespace: {{ $.Release.Namespace }}
   labels:
-    {{- include "labels.common" $ | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
 spec:
   url: oci://gsoci.azurecr.io/charts/giantswarm/aws-nth-crossplane-resources
   ref:
@@ -87,7 +90,7 @@ metadata:
   name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
   namespace: {{ $.Release.Namespace }}
   labels:
-    {{- include "labels.common" $ | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
 spec:
   releaseName: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
   targetNamespace: {{ $.Release.Namespace }}

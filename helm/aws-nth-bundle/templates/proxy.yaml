@@ -1,9 +1,9 @@
-{{- if or ($.Values.proxy).http ($.Values.proxy).https ($.Values.proxy).noProxy }}
+{{- if or ($.Values.proxy).httpProxy ($.Values.proxy).httpsProxy ($.Values.proxy).noProxy }}
 apiVersion: v1
 kind: Secret
 metadata:
   labels:
-    {{- include "labels.common" $ | nindent 4 }}
+    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
   name: {{ $.Values.clusterID }}-node-termination-handler-proxy
   namespace: {{ $.Release.Namespace }}
 type: Opaque
