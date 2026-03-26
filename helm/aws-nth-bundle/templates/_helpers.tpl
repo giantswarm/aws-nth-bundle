@@ -58,6 +58,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 giantswarm.io/service-type: "managed"
 application.giantswarm.io/team: {{ index .Chart.Annotations "application.giantswarm.io/team" | quote }}
 giantswarm.io/cluster: {{ include "aws-nth-bundle.clusterID" . | quote }}
+cluster.x-k8s.io/cluster-name: {{ include "aws-nth-bundle.clusterID" . | quote }}
 {{- end -}}
 
 {{/*
