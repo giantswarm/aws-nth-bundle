@@ -70,21 +70,76 @@ Fetch crossplane config ConfigMap data
 {{- $cmvalues := dict -}}
 {{- if and $configmap $configmap.data $configmap.data.values -}}
   {{- $cmvalues = fromYaml $configmap.data.values -}}
+{{- else -}}
+  {{- fail (printf "Crossplane config ConfigMap %s-crossplane-config not found in namespace %s or has no data" $clusterName .Release.Namespace) -}}
 {{- end -}}
 {{- $cmvalues | toYaml -}}
+{{- end -}}
+
+{{/*
+Get accountID from ConfigMap lookup
+*/}}
+{{- define "karpenter-bundle.accountID" -}}
+{{- $cmvalues := (include "karpenter-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- index $cmvalues "accountID" | default "" -}}
+{{- end -}}
+
+{{/*
+Get awsPartition from ConfigMap lookup
+*/}}
+{{- define "karpenter-bundle.awsPartition" -}}
+{{- $cmvalues := (include "karpenter-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- index $cmvalues "awsPartition" | default "aws" -}}
+{{- end -}}
+
+{{/*
+Get awsRegion from ConfigMap lookup
+*/}}
+{{- define "karpenter-bundle.awsRegion" -}}
+{{- $cmvalues := (include "karpenter-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- index $cmvalues "awsRegion" | default "eu-west-1" -}}
+{{- end -}}
+
+{{/*
+Get trust policy statements for all provided OIDC domains
+*/}}
+{{- define "aws-nth-bundle.trustPolicyStatements" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- range $index, $oidcDomain := $cmvalues.oidcDomains -}}
+{{- if not (eq $index 0) }}, {{ end }}{
+  "Effect": "Allow",
+  "Principal": {
+    "Federated": "arn:{{ $cmvalues.awsPartition }}:iam::{{ $cmvalues.accountID }}:oidc-provider/{{ $oidcDomain }}"
+  },
+  "Action": "sts:AssumeRoleWithWebIdentity",
+  "Condition": {
+    "StringEquals": {
+      "{{ $oidcDomain }}:sub": "system:serviceaccount:kube-system:{{ $.Values.controller.serviceAccount.name }}"
+    }
+  }
+}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Full SQS queue URL for NTH
 */}}
 {{- define "aws-nth-bundle.queueURL" -}}
-{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- $clusterName := (include "aws-nth-bundle.clusterID" .) -}}
-{{- if and $cmvalues $cmvalues.region $cmvalues.accountID -}}
-https://sqs.{{ $cmvalues.region }}.amazonaws.com/{{ $cmvalues.accountID }}/{{ $clusterName }}-nth
-{{- else -}}
-{{ $clusterName }}-nth
+{{- $accountID := include "aws-nth-bundle.accountID" . -}}
+{{- $awsRegion := include "aws-nth-bundle.awsRegion" . -}}
+{{- $clusterName := include "aws-nth-bundle.clusterID" . -}}
+{{- printf "https://sqs.%s.amazonaws.com/%s/%s-nth" $awsRegion $accountID $clusterName -}}
 {{- end -}}
+
+{{/*
+SQS Queue ARN
+*/}}
+{{- define "aws-nth-bundle.sqsQueueArn" -}}
+{{- $accountID := include "aws-nth-bundle.accountID" . -}}
+{{- $awsPartition := include "aws-nth-bundle.awsPartition" . -}}
+{{- $awsRegion := include "aws-nth-bundle.awsRegion" . -}}
+{{- $clusterName := include "aws-nth-bundle.clusterID" . -}}
+{{- printf "arn:%s:sqs:%s:%s:%s-nth" $awsPartition $awsRegion $accountID $clusterName -}}
 {{- end -}}
 
 {{/*

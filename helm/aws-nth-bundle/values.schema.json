@@ -11,6 +11,9 @@
         },
         "managementCluster": {
             "type": "string"
+        },
+        "region": {
+            "type": "string"
         }
     }
 }

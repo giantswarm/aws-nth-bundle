@@ -1,0 +1,101 @@
+{{- $sqsQueueArn := include "aws-nth-bundle.sqsQueueArn" . -}}
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Role
+metadata:
+  name: {{.Values.clusterID}}-nth
+  namespace: {{ $.Release.Namespace }}
+  labels:
+      {{- include "labels.common" . | nindent 4 }}
+spec:
+  providerConfigRef:
+    name: {{.Values.clusterID}}
+  forProvider:
+    tags:
+      giantswarm.io/cluster: {{.Values.clusterID}}
+      giantswarm.io/managed-by: {{ .Release.Name | quote }}
+      sigs.k8s.io/cluster-api-provider-aws/cluster/{{.Values.clusterID}}: owned
+    assumeRolePolicy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {{- include "aws-nth-bundle.trustPolicyStatements" . | nindent 10 }}
+        ]
+      }
+    inlinePolicy:
+      - name: nth-policy
+        policy: |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "autoscaling:CompleteLifecycleAction",
+                  "autoscaling:DescribeAutoScalingInstances",
+                  "autoscaling:DescribeLifecycleHooks",
+                  "autoscaling:DescribeTags",
+                  "autoscaling:RecordLifecycleActionHeartbeat",
+                  "ec2:DescribeInstances",
+                ],
+                "Resource": "*"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sqs:DeleteMessage",
+                  "sqs:ReceiveMessage"
+                ],
+                "Resource": "{{ $sqsQueueArn }}"
+              }
+            ]
+          }
+---
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Role
+metadata:
+  name: {{.Values.clusterID}}-nth-notification
+  namespace: {{ $.Release.Namespace }}
+  labels:
+      {{- include "labels.common" . | nindent 4 }}
+spec:
+  providerConfigRef:
+    name: {{.Values.clusterID}}
+  forProvider:
+    tags:
+      giantswarm.io/cluster: {{.Values.clusterID}}
+      giantswarm.io/managed-by: {{ .Release.Name | quote }}
+      sigs.k8s.io/cluster-api-provider-aws/cluster/{{.Values.clusterID}}: owned
+    assumeRolePolicy: |
+      {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Effect": "Allow",
+                  "Action": [
+                      "sts:AssumeRole"
+                  ],
+                  "Principal": {
+                      "Service": [
+                          "autoscaling.amazonaws.com"
+                      ]
+                  }
+              }
+          ]
+      }
+    inlinePolicy:
+      - name: nth-policy
+        policy: |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Effect": "Allow",
+                      "Action": [
+                          "sqs:SendMessage",
+                          "sqs:GetQueueUrl",
+                          "sns:Publish"
+                      ],
+                      "Resource": "{{ $sqsQueueArn }}"
+                  }
+              ]
+          }

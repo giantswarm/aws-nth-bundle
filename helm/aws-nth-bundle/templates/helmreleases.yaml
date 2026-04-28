@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
 spec:
-  url: oci://gsoci.azurecr.io/charts/giantswarm/aws-node-termination-handler
+  url: {{ .Values.ociRepositoryUrl }}
   ref:
     # used by renovate
     # repo: giantswarm/aws-node-termination-handler-app
@@ -45,16 +45,9 @@ spec:
   values:
     clusterID: {{ $.Values.clusterID }}
     enableSqsTerminationDraining: true
-    queueURL: {{ $.Values.clusterID }}-nth
+    queueURL: {{ include "aws-nth-bundle.queueURL" $ | trim | quote }}
     clusterName: {{ $.Values.clusterID }}
-    extraEnv:
-    - name: QUEUE_URL
-      value: {{ include "aws-nth-bundle.queueURL" $ | trim | quote }}
   valuesFrom:
-  - kind: ConfigMap
-    name: {{ $.Values.clusterID }}-crossplane-config
-    valuesKey: values
-    optional: false
 {{- if or ($.Values.proxy).httpProxy ($.Values.proxy).httpsProxy ($.Values.proxy).noProxy }}
   - kind: Secret
     name: {{ $.Values.clusterID }}-node-termination-handler-proxy
@@ -67,48 +60,3 @@ spec:
     valuesKey: values
     optional: false
 {{- end }}
----
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
-metadata:
-  name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
-  namespace: {{ $.Release.Namespace }}
-  labels:
-    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
-spec:
-  url: oci://gsoci.azurecr.io/charts/giantswarm/aws-nth-crossplane-resources
-  ref:
-    # used by renovate
-    # repo: giantswarm/aws-nth-crossplane-resources
-    tag: "1.3.2"
-  interval: 24h
-  timeout: 60s
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
-  namespace: {{ $.Release.Namespace }}
-  labels:
-    {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
-spec:
-  releaseName: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
-  targetNamespace: {{ $.Release.Namespace }}
-  storageNamespace: {{ $.Release.Namespace }}
-  chartRef:
-    kind: OCIRepository
-    name: {{ $.Values.clusterID }}-aws-nth-crossplane-resources
-  serviceAccountName: automation
-  interval: 1m
-  timeout: 10m
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    remediation:
-      retries: -1
-  valuesFrom:
-  - kind: ConfigMap
-    name: {{ $.Values.clusterID }}-crossplane-config
-    valuesKey: values
-    optional: false

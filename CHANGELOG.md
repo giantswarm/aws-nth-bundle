@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Remove `cluster-values` ConfigMap reference from `aws-node-termination-handler` HelmRelease. Pass `clusterID` explicitly via inline values instead.
+- Deploy directly from the bundle instead of standalone helmrelease.
+- Cleanup values and helm template functions.
 
 ## [1.4.0] - 2026-03-24
 

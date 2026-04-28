@@ -1,0 +1,110 @@
+{{- $sqsQueueArn := include "aws-nth-bundle.sqsQueueArn" . -}}
+apiVersion: sqs.aws.upbound.io/v1beta1
+kind: Queue
+metadata:
+  name: {{ .Values.clusterID }}-nth
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+spec:
+  providerConfigRef:
+    name: {{.Values.clusterID}}
+  forProvider:
+    name: {{.Values.clusterID}}-nth
+    tags:
+      giantswarm.io/cluster: {{.Values.clusterID}}
+      giantswarm.io/used-for: termination-handler
+      giantswarm.io/managed-by: {{ .Release.Name | quote }}
+      sigs.k8s.io/cluster-api-provider-aws/cluster/{{.Values.clusterID}}: owned
+    region: {{ include "aws-nth-bundle.awsRegion" . }}
+    messageRetentionSeconds: 300
+  writeConnectionSecretToRef:
+    name: {{.Values.clusterID}}-nth-sqs-connection
+    namespace: {{ $.Release.Namespace }}
+---
+apiVersion: sqs.aws.upbound.io/v1beta1
+kind: QueuePolicy
+metadata:
+  name: {{.Values.clusterID}}-nth
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+spec:
+  providerConfigRef:
+    name: {{.Values.clusterID}}
+  forProvider:
+    region: {{ include "aws-nth-bundle.awsRegion" . }}
+    policy: |
+      {
+        "Version": "2012-10-17",
+        "Id": "EC2InterruptionPolicy",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [
+                "events.amazonaws.com",
+                "sqs.amazonaws.com"
+              ]
+            },
+            "Action": "sqs:SendMessage",
+            "Resource": "{{ $sqsQueueArn }}"
+          }
+        ]
+      }
+    queueUrlRef:
+      name: {{.Values.clusterID}}-nth
+---
+# Apart from ASG lifecycle hook events, which are sent by creating a hook via
+# `AWSCluster.spec.lifecycleHooks`, also send EC2 state change and spot instance interruption
+# events to the SQS queue as well so aws-node-termination-handler can react to them.
+apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+kind: Rule
+metadata:
+  name: {{.Values.clusterID}}-nth-events
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+
+    # Rule selector used in the below `Target`
+    giantswarm.io/used-for: nth-events
+spec:
+  providerConfigRef:
+    name: {{.Values.clusterID}}
+  forProvider:
+    tags:
+      giantswarm.io/cluster: {{.Values.clusterID}}
+      giantswarm.io/managed-by: {{ .Release.Name | quote }}
+      sigs.k8s.io/cluster-api-provider-aws/cluster/{{.Values.clusterID}}: owned
+    region: {{ include "aws-nth-bundle.awsRegion" . }}
+    eventBusName: default
+    eventPattern: |
+      {
+        "source": [
+          "aws.ec2"
+        ],
+        "detail-type": [
+          "EC2 Instance State-change Notification",
+          "EC2 Spot Instance Interruption Warning"
+        ]
+      }
+---
+apiVersion: cloudwatchevents.aws.upbound.io/v1beta1
+kind: Target
+metadata:
+  name: {{.Values.clusterID}}-nth-events
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+spec:
+  providerConfigRef:
+    name: {{.Values.clusterID}}
+  forProvider:
+    arn: {{ $sqsQueueArn }}
+    region: {{ include "aws-nth-bundle.awsRegion" . }}
+    eventBusName: default
+    targetId: nth-events
+    ruleSelector:
+      matchLabels:
+        giantswarm.io/cluster: {{.Values.clusterID}}
+        giantswarm.io/used-for: nth-events
