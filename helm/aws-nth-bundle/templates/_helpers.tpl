@@ -114,7 +114,7 @@ Get trust policy statements for all provided OIDC domains
   "Action": "sts:AssumeRoleWithWebIdentity",
   "Condition": {
     "StringEquals": {
-      "{{ $oidcDomain }}:sub": "system:serviceaccount:kube-system:{{ $.Values.controller.serviceAccount.name }}"
+      "{{ $oidcDomain }}:sub": "system:serviceaccount:kube-system:aws-node-termination-handler"
     }
   }
 }
