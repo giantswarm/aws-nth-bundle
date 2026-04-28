@@ -79,24 +79,24 @@ Fetch crossplane config ConfigMap data
 {{/*
 Get accountID from ConfigMap lookup
 */}}
-{{- define "karpenter-bundle.accountID" -}}
-{{- $cmvalues := (include "karpenter-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- define "aws-nth-bundle.accountID" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
 {{- index $cmvalues "accountID" | default "" -}}
 {{- end -}}
 
 {{/*
 Get awsPartition from ConfigMap lookup
 */}}
-{{- define "karpenter-bundle.awsPartition" -}}
-{{- $cmvalues := (include "karpenter-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- define "aws-nth-bundle.awsPartition" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
 {{- index $cmvalues "awsPartition" | default "aws" -}}
 {{- end -}}
 
 {{/*
 Get awsRegion from ConfigMap lookup
 */}}
-{{- define "karpenter-bundle.awsRegion" -}}
-{{- $cmvalues := (include "karpenter-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- define "aws-nth-bundle.awsRegion" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
 {{- index $cmvalues "awsRegion" | default "eu-west-1" -}}
 {{- end -}}
 
