@@ -2,7 +2,7 @@ module e2e
 
 go 1.25.7
 
-toolchain go1.25.8
+toolchain go1.26.2
 
 require (
 	github.com/fluxcd/helm-controller/api v1.4.5
