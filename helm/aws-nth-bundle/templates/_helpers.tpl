@@ -97,7 +97,7 @@ Get awsRegion from ConfigMap lookup
 */}}
 {{- define "aws-nth-bundle.awsRegion" -}}
 {{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- index $cmvalues "awsRegion" | required "awsRegion is required in crossplane config" -}}
+{{- index $cmvalues "region" | required "region is required in crossplane config" -}}
 {{- end -}}
 
 {{/*
