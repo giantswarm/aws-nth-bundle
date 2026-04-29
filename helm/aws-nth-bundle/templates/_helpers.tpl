@@ -81,7 +81,7 @@ Get accountID from ConfigMap lookup
 */}}
 {{- define "aws-nth-bundle.accountID" -}}
 {{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- index $cmvalues "accountID" | default "" -}}
+{{- index $cmvalues "accountID" | required "accountID is required in crossplane config" -}}
 {{- end -}}
 
 {{/*
@@ -89,7 +89,7 @@ Get awsPartition from ConfigMap lookup
 */}}
 {{- define "aws-nth-bundle.awsPartition" -}}
 {{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- index $cmvalues "awsPartition" | default "aws" -}}
+{{- index $cmvalues "awsPartition" | required "awsPartition is required in crossplane config" -}}
 {{- end -}}
 
 {{/*
@@ -97,7 +97,7 @@ Get awsRegion from ConfigMap lookup
 */}}
 {{- define "aws-nth-bundle.awsRegion" -}}
 {{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- index $cmvalues "awsRegion" | default "eu-west-1" -}}
+{{- index $cmvalues "awsRegion" | required "awsRegion is required in crossplane config" -}}
 {{- end -}}
 
 {{/*
