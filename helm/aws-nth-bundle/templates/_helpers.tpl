@@ -146,17 +146,18 @@ SQS Queue ARN
 Proxy values for aws-node-termination-handler
 */}}
 {{- define "aws-nth-bundle.proxyValues" -}}
-extraEnv:
-{{- if .Values.proxy.http }}
-- name: HTTP_PROXY
-  value: {{ .Values.proxy.http | quote }}
-{{- end }}
-{{- if .Values.proxy.https }}
-- name: HTTPS_PROXY
-  value: {{ .Values.proxy.https | quote }}
-{{- end }}
-{{- if .Values.proxy.noProxy }}
-- name: NO_PROXY
-  value: {{ .Values.proxy.noProxy | quote }}
-{{- end }}
-{{ end -}}
+upstream:
+  extraEnv:
+  {{- if .Values.proxy.http }}
+  - name: HTTP_PROXY
+    value: {{ .Values.proxy.http | quote }}
+  {{- end }}
+  {{- if .Values.proxy.https }}
+  - name: HTTPS_PROXY
+    value: {{ .Values.proxy.https | quote }}
+  {{- end }}
+  {{- if .Values.proxy.noProxy }}
+  - name: NO_PROXY
+    value: {{ .Values.proxy.noProxy | quote }}
+  {{- end }}
+{{- end -}}
