@@ -143,6 +143,17 @@ SQS Queue ARN
 {{- end -}}
 
 {{/*
+Node Role ARN
+*/}}
+{{- define "aws-nth-bundle.nodeRoleArn" -}}
+{{- $accountID := include "aws-nth-bundle.accountID" . -}}
+{{- $awsPartition := include "aws-nth-bundle.awsPartition" . -}}
+{{- $awsRegion := include "aws-nth-bundle.awsRegion" . -}}
+{{- $clusterName := include "aws-nth-bundle.clusterID" . -}}
+{{- printf "arn:%s:iam::%s:role/%s-nth" $awsPartition $accountID $clusterName -}}
+{{- end -}}
+
+{{/*
 Proxy values for aws-node-termination-handler
 */}}
 {{- define "aws-nth-bundle.proxyValues" -}}

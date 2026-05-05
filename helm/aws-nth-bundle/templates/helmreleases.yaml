@@ -44,6 +44,9 @@ spec:
     upstream:
       enableSqsTerminationDraining: true
       queueURL: {{ include "aws-nth-bundle.queueURL" $ | trim | quote }}
+      serviceAccount:
+        annotations:
+          eks.amazonaws.com/role-arn: {{ include "aws-nth-bundle.nodeRoleArn" $ | quote }}
   valuesFrom:
 {{- if or ($.Values.proxy).httpProxy ($.Values.proxy).httpsProxy ($.Values.proxy).noProxy }}
   - kind: Secret
