@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: 1.25.2
 description: Bundle chart for aws-node-termination-handler (management cluster)
 name: aws-nth-bundle
-version: 1.4.0
+version: 1.5.0
 home: https://github.com/giantswarm/aws-nth-bundle
 icon: https://s.giantswarm.io/app-icons/aws/2/light.svg
 annotations:
