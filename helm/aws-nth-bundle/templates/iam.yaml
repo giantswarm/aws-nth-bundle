@@ -35,7 +35,7 @@ spec:
                   "autoscaling:DescribeLifecycleHooks",
                   "autoscaling:DescribeTags",
                   "autoscaling:RecordLifecycleActionHeartbeat",
-                  "ec2:DescribeInstances",
+                  "ec2:DescribeInstances"
                 ],
                 "Resource": "*"
               },
