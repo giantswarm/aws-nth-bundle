@@ -26,6 +26,8 @@ spec:
   releaseName: aws-node-termination-handler
   targetNamespace: kube-system
   storageNamespace: kube-system
+  dependsOn:
+  - name: {{ $.Values.clusterID }}-prometheus-operator-crd
   chartRef:
     kind: OCIRepository
     name: {{ $.Values.clusterID }}-aws-node-termination-handler
