@@ -30,6 +30,11 @@ spec:
   kubeConfig:
     secretRef:
       name: {{ $.Values.clusterID }}-kubeconfig
+  # dependsOn:
+    # TODO: enable once https://github.com/giantswarm/cluster-aws/pull/1758/changes is merged
+    # also remove pre-flight hook from the sub-chart
+    # - name: {{ $.Values.clusterID }}-aws-pod-identity-webhook
+    # - name: {{ $.Values.clusterID }}-kyverno-crds
   interval: 1m
   timeout: 15m
   install:
