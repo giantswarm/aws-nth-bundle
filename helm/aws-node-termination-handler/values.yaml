@@ -9,7 +9,7 @@ preflightCheck:
   image:
     registry: gsoci.azurecr.io
     name: giantswarm/kubectl
-    tag: 1.31.4
+    tag: 1.35.4
 
 networkPolicy:
   enabled: true

@@ -92,9 +92,6 @@ spec:
             requests:
               memory: "64Mi"
               cpu: "10m"
-            limits:
-              memory: "256Mi"
-              cpu: "100m"
           command:
             - /bin/sh
             - -c
