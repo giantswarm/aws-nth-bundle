@@ -3,14 +3,6 @@ upstream:
   nameOverride: aws-node-termination-handler
 
 # --- EXTRAS ---------------------------------------------------------------------
-preflightCheck:
-  enabled: true
-  deploymentName: aws-pod-identity-webhook-app
-  image:
-    registry: gsoci.azurecr.io
-    name: giantswarm/kubectl
-    tag: 1.35.4
-
 networkPolicy:
   enabled: true
 

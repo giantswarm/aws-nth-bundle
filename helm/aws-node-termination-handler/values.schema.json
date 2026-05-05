@@ -7,10 +7,6 @@
             "type": "object",
             "additionalProperties": true
         },
-        "preflightCheck": {
-            "type": "object",
-            "additionalProperties": true
-        },
         "networkPolicy": {
             "type": "object",
             "additionalProperties": true

@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `cluster.x-k8s.io/cluster-name` label to the HelmReleases.
-- Add a `pre-install`/`pre-upgrade` Helm hook to `aws-node-termination-handler` that verifies the `aws-pod-identity-webhook-app` deployment exists in `kube-system` and has at least one ready replica.
 - Add Flux `dependsOn` from the `aws-node-termination-handler` HelmRelease to the `prometheus-operator-crd` HelmRelease.
 
 ### Changed
