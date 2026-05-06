@@ -1,2 +1,4 @@
+ociRepositoryUrl: oci://gsoci.azurecr.io/charts/giantswarm/aws-node-termination-handler
 clusterID: ""
 managementCluster: ""
+region: ""

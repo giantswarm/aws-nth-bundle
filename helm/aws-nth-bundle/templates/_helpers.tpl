@@ -70,38 +70,105 @@ Fetch crossplane config ConfigMap data
 {{- $cmvalues := dict -}}
 {{- if and $configmap $configmap.data $configmap.data.values -}}
   {{- $cmvalues = fromYaml $configmap.data.values -}}
+{{- else -}}
+  {{- fail (printf "Crossplane config ConfigMap %s-crossplane-config not found in namespace %s or has no data" $clusterName .Release.Namespace) -}}
 {{- end -}}
 {{- $cmvalues | toYaml -}}
+{{- end -}}
+
+{{/*
+Get accountID from ConfigMap lookup
+*/}}
+{{- define "aws-nth-bundle.accountID" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- index $cmvalues "accountID" | required "accountID is required in crossplane config" -}}
+{{- end -}}
+
+{{/*
+Get awsPartition from ConfigMap lookup
+*/}}
+{{- define "aws-nth-bundle.awsPartition" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- index $cmvalues "awsPartition" | required "awsPartition is required in crossplane config" -}}
+{{- end -}}
+
+{{/*
+Get awsRegion from ConfigMap lookup
+*/}}
+{{- define "aws-nth-bundle.awsRegion" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- index $cmvalues "region" | required "region is required in crossplane config" -}}
+{{- end -}}
+
+{{/*
+Get trust policy statements for all provided OIDC domains
+*/}}
+{{- define "aws-nth-bundle.trustPolicyStatements" -}}
+{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
+{{- range $index, $oidcDomain := $cmvalues.oidcDomains -}}
+{{- if not (eq $index 0) }}, {{ end }}{
+  "Effect": "Allow",
+  "Principal": {
+    "Federated": "arn:{{ $cmvalues.awsPartition }}:iam::{{ $cmvalues.accountID }}:oidc-provider/{{ $oidcDomain }}"
+  },
+  "Action": "sts:AssumeRoleWithWebIdentity",
+  "Condition": {
+    "StringEquals": {
+      "{{ $oidcDomain }}:sub": "system:serviceaccount:kube-system:aws-node-termination-handler"
+    }
+  }
+}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Full SQS queue URL for NTH
 */}}
 {{- define "aws-nth-bundle.queueURL" -}}
-{{- $cmvalues := (include "aws-nth-bundle.crossplaneConfigData" .) | fromYaml -}}
-{{- $clusterName := (include "aws-nth-bundle.clusterID" .) -}}
-{{- if and $cmvalues $cmvalues.region $cmvalues.accountID -}}
-https://sqs.{{ $cmvalues.region }}.amazonaws.com/{{ $cmvalues.accountID }}/{{ $clusterName }}-nth
-{{- else -}}
-{{ $clusterName }}-nth
+{{- $accountID := include "aws-nth-bundle.accountID" . -}}
+{{- $awsRegion := include "aws-nth-bundle.awsRegion" . -}}
+{{- $clusterName := include "aws-nth-bundle.clusterID" . -}}
+{{- printf "https://sqs.%s.amazonaws.com/%s/%s-nth" $awsRegion $accountID $clusterName -}}
 {{- end -}}
+
+{{/*
+SQS Queue ARN
+*/}}
+{{- define "aws-nth-bundle.sqsQueueArn" -}}
+{{- $accountID := include "aws-nth-bundle.accountID" . -}}
+{{- $awsPartition := include "aws-nth-bundle.awsPartition" . -}}
+{{- $awsRegion := include "aws-nth-bundle.awsRegion" . -}}
+{{- $clusterName := include "aws-nth-bundle.clusterID" . -}}
+{{- printf "arn:%s:sqs:%s:%s:%s-nth" $awsPartition $awsRegion $accountID $clusterName -}}
+{{- end -}}
+
+{{/*
+Node Role ARN
+*/}}
+{{- define "aws-nth-bundle.nodeRoleArn" -}}
+{{- $accountID := include "aws-nth-bundle.accountID" . -}}
+{{- $awsPartition := include "aws-nth-bundle.awsPartition" . -}}
+{{- $awsRegion := include "aws-nth-bundle.awsRegion" . -}}
+{{- $clusterName := include "aws-nth-bundle.clusterID" . -}}
+{{- printf "arn:%s:iam::%s:role/%s-nth" $awsPartition $accountID $clusterName -}}
 {{- end -}}
 
 {{/*
 Proxy values for aws-node-termination-handler
 */}}
 {{- define "aws-nth-bundle.proxyValues" -}}
-extraEnv:
-{{- if .Values.proxy.http }}
-- name: HTTP_PROXY
-  value: {{ .Values.proxy.http | quote }}
-{{- end }}
-{{- if .Values.proxy.https }}
-- name: HTTPS_PROXY
-  value: {{ .Values.proxy.https | quote }}
-{{- end }}
-{{- if .Values.proxy.noProxy }}
-- name: NO_PROXY
-  value: {{ .Values.proxy.noProxy | quote }}
-{{- end }}
-{{ end -}}
+upstream:
+  extraEnv:
+  {{- if .Values.proxy.http }}
+  - name: HTTP_PROXY
+    value: {{ .Values.proxy.http | quote }}
+  {{- end }}
+  {{- if .Values.proxy.https }}
+  - name: HTTPS_PROXY
+    value: {{ .Values.proxy.https | quote }}
+  {{- end }}
+  {{- if .Values.proxy.noProxy }}
+  - name: NO_PROXY
+    value: {{ .Values.proxy.noProxy | quote }}
+  {{- end }}
+{{- end -}}
