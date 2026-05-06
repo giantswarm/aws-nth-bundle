@@ -24,10 +24,15 @@ spec:
   releaseName: aws-node-termination-handler
   targetNamespace: kube-system
   storageNamespace: kube-system
+{{- with (($.Values.awsNodeTerminationHandler).dependsOn) }}
   dependsOn:
-  - name: {{ $.Values.clusterID }}-prometheus-operator-crd
-  - name: {{ $.Values.clusterID }}-aws-pod-identity-webhook
-  - name: {{ $.Values.clusterID }}-kyverno-crds
+  {{- range . }}
+  - name: {{ $.Values.clusterID }}-{{ .name }}
+    {{- if .namespace }}
+    namespace: {{ .namespace }}
+    {{- end }}
+  {{- end }}
+{{- end }}
   chartRef:
     kind: OCIRepository
     name: {{ $.Values.clusterID }}-aws-node-termination-handler
