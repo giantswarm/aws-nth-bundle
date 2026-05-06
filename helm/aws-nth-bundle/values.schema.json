@@ -14,6 +14,26 @@
         },
         "region": {
             "type": "string"
+        },
+        "awsNodeTerminationHandler": {
+            "type": "object",
+            "properties": {
+                "dependsOn": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "namespace": {
+                                "type": "string"
+                            }
+                        },
+                        "required": ["name"]
+                    }
+                }
+            }
         }
     }
 }

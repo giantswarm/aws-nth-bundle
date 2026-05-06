@@ -2,3 +2,11 @@ ociRepositoryUrl: oci://gsoci.azurecr.io/charts/giantswarm/aws-node-termination-
 clusterID: ""
 managementCluster: ""
 region: ""
+
+awsNodeTerminationHandler:
+  # HelmReleases that the subchart aws-node-termination-handler HelmRelease depends on. Each `name`
+  # is automatically prefixed with `clusterID` to match the bundle's HelmRelease naming convention.
+  dependsOn:
+    - name: prometheus-operator-crd
+    - name: aws-pod-identity-webhook
+    - name: kyverno-crds
