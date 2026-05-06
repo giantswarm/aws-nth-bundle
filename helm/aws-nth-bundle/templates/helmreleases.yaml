@@ -9,7 +9,7 @@ metadata:
 spec:
   url: {{ .Values.ociRepositoryUrl }}
   ref:
-    tag: {{ .Chart.Version }}
+    tag: {{ .Chart.AppVersion }}
   interval: 24h
   timeout: 60s
 ---
