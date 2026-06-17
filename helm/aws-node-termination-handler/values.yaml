@@ -2,6 +2,9 @@
 upstream:
   nameOverride: aws-node-termination-handler
 
+  image:
+    repository: gsoci.azurecr.io/giantswarm/aws-node-termination-handler
+
 # --- EXTRAS ---------------------------------------------------------------------
 networkPolicy:
   enabled: true
