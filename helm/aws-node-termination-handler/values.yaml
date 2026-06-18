@@ -17,7 +17,3 @@ verticalPodAutoscaler:
   minAllowed:
     cpu: 50m
     memory: 50Mi
-
-global:
-  podSecurityStandards:
-    enforced: true
