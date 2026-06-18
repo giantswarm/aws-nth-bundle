@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-06-18
+
 ### Changed
 
 - Use `gsoci.azurecr.io/giantswarm/aws-node-termination-handler` for the container image.
@@ -91,7 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First release
 
-[Unreleased]: https://github.com/giantswarm/aws-nth-bundle/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/giantswarm/aws-nth-bundle/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/giantswarm/aws-nth-bundle/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/giantswarm/aws-nth-bundle/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/giantswarm/aws-nth-bundle/compare/v1.5.0...v2.0.0
 [1.5.0]: https://github.com/giantswarm/aws-nth-bundle/compare/v1.4.0...v1.5.0
