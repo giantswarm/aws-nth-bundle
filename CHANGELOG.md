@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use `gsoci.azurecr.io/giantswarm/aws-node-termination-handler` for the container image.
+- Fix the Flux HelmRelease remediation policy (always remediate).
+
 ## [2.0.1] - 2026-05-06
 
 ### Added
