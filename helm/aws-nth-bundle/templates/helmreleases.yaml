@@ -44,11 +44,9 @@ spec:
   install:
     remediation:
       retries: -1
-      remediateLastFailure: false
   upgrade:
     remediation:
-      retries: 0
-      remediateLastFailure: false
+      retries: -1
   values:
     upstream:
       enableSqsTerminationDraining: true

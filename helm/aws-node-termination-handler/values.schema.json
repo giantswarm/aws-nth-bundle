@@ -14,10 +14,6 @@
         "verticalPodAutoscaler": {
             "type": "object",
             "additionalProperties": true
-        },
-        "global": {
-            "type": "object",
-            "additionalProperties": true
         }
     }
 }
