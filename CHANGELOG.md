@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Bump OCIRepository version to v1.
+- AWS Node Termination Handler: Force resource updates on upgrade.
 
 ## [2.1.0] - 2026-06-18
 
