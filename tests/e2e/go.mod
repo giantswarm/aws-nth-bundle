@@ -6,7 +6,7 @@ toolchain go1.26.2
 
 require (
 	github.com/fluxcd/helm-controller/api v1.5.1
-	github.com/giantswarm/apptest-framework/v3 v3.3.0
+	github.com/giantswarm/apptest-framework/v5 v5.2.1
 	github.com/giantswarm/clustertest/v3 v3.3.0
 	github.com/onsi/ginkgo/v2 v2.28.3
 	github.com/onsi/gomega v1.42.1
