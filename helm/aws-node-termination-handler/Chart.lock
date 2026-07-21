@@ -1,6 +1,6 @@
 dependencies:
 - name: aws-node-termination-handler
   repository: oci://public.ecr.aws/aws-ec2/helm
-  version: 0.27.5
-digest: sha256:4c4e48439d91d36f6409f35c05221e7baff70b5cf33c5ab446c0d7fe8e369044
-generated: "2026-03-19T10:09:59.108333+01:00"
+  version: 0.27.6
+digest: sha256:357b102d9ef2c38eeef90f87e5b020fbfdfb19341d7131ee563e3dd2e55bf55a
+generated: "2026-07-21T04:37:22.331752638Z"
