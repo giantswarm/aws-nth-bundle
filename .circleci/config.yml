@@ -24,7 +24,6 @@ workflows:
           override_chart_version: true
           chart: aws-node-termination-handler
           explicit_allow_chart_name_mismatch: true
-          ct_config: ".circleci/ct-config.yaml"
           <<: *job_filters
 
       - architect/push-to-app-catalog:
