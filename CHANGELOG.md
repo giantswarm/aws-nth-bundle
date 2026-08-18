@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Run the E2E test suites automatically on release PRs by adding `.github/release-pr-body.md`.
+
 ## [2.1.1] - 2026-07-21
 
 ### Changed
