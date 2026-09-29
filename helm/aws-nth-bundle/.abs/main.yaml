@@ -1,0 +1,2 @@
+# templates read the cluster's crossplane ConfigMap via lookup, which is empty under helm template
+disable-helm-template-validator: true
