@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix the broken upstream chart link in the README: the chart moved from `aws/eks-charts` to `aws/aws-node-termination-handler`.
 - The `helm.sh/chart` label is valid for long chart versions: the 63-character cut trims the whole trailing run of `-`, `.` and `_`.
 
 ### Changed
