@@ -90,4 +90,4 @@ helm template test helm/aws-node-termination-handler/
 ## Credit
 
 * https://github.com/aws/aws-node-termination-handler
-* https://github.com/aws/eks-charts/tree/master/stable/aws-node-termination-handler
+* https://github.com/aws/aws-node-termination-handler/tree/main/config/helm/aws-node-termination-handler
