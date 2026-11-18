@@ -14,6 +14,24 @@
         "verticalPodAutoscaler": {
             "type": "object",
             "additionalProperties": true
+        },
+        "kyvernoPolicyExceptions": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "legacy": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
         }
     }
 }
