@@ -1,0 +1,52 @@
+{{- if .Values.kyvernoPolicyExceptions.enabled }}
+apiVersion: policies.kyverno.io/v1
+kind: PolicyException
+metadata:
+  name: {{ .Release.Name }}-aws-node-termination-handler
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "aws-node-termination-handler.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade"
+spec:
+  policyRefs:
+  - name: disallow-host-path
+    kind: ValidatingPolicy
+  - name: restrict-volume-types
+    kind: ValidatingPolicy
+  # disallow-capabilities-strict is missing from the legacy exception. It is
+  # excepted because the aws-node-termination-handler Deployment fails it.
+  - name: disallow-capabilities-strict
+    kind: ValidatingPolicy
+  # restrict-seccomp-strict is missing from the legacy exception. It is excepted
+  # because the aws-node-termination-handler Deployment fails it.
+  - name: restrict-seccomp-strict
+    kind: ValidatingPolicy
+  # require-container-requests-and-limits is a supplemental policy and usually
+  # not enabled. It is excepted because the aws-node-termination-handler
+  # Deployment fails it when the policy is enforced.
+  - name: require-container-requests-and-limits
+    kind: ValidatingPolicy
+  # restrict-sa-automount-sa-token is a supplemental policy and usually not
+  # enabled. It is excepted because the aws-node-termination-handler
+  # ServiceAccount fails it when the policy is enforced.
+  - name: restrict-sa-automount-sa-token
+    kind: ValidatingPolicy
+  matchConditions:
+  # The first block is the legacy match. It matches nothing when the release is
+  # named aws-node-termination-handler (as the bundle installs it): the upstream
+  # chart then names its resources after the release alone. The second block
+  # matches the real Deployment, its Pods and its ServiceAccount (Deployment
+  # and ServiceAccount fail the policies above as well).
+  - name: aws-node-termination-handler-workloads
+    expression: >-
+      (request.kind.kind == 'Pod' &&
+      request.namespace == '{{ .Release.Namespace }}' &&
+      has(object.metadata.name) &&
+      object.metadata.name.startsWith('{{ .Release.Name }}-aws-node-termination-handler-')) ||
+      (request.kind.kind in ['Deployment', 'Pod', 'ServiceAccount'] &&
+      request.namespace == '{{ .Release.Namespace }}' &&
+      has(object.metadata.name) &&
+      (object.metadata.name == '{{ .Release.Name }}' ||
+      object.metadata.name.startsWith('{{ .Release.Name }}-')))
+{{- end }}
