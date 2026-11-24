@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Label the member `OCIRepository` with `bundle.giantswarm.io/member-chart: aws-node-termination-handler`, so a reservation can find it.
+
+### Changed
+
+- The bundle now takes the chart name and version from `apps.awsNodeTerminationHandler` (`chartName`, `version`), like the other bundles. The OCI URL is built from `chartName` and the tag comes from `version` (default `2.1.1`, the former `appVersion`). The rendered `OCIRepository` is otherwise unchanged.
+- `ociRepositoryUrl` is deprecated but still works as an override of the URL. It now defaults to empty.
+
 ### Fixed
 
 - Fix the broken upstream chart link in the README: the chart moved from `aws/eks-charts` to `aws/aws-node-termination-handler`.

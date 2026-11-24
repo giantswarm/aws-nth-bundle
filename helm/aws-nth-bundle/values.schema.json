@@ -3,6 +3,24 @@
     "type": "object",
     "additionalProperties": true,
     "properties": {
+        "apps": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "awsNodeTerminationHandler": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "properties": {
+                        "chartName": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "ociRepositoryUrl": {
             "type": "string"
         },

@@ -1,3 +1,4 @@
+{{- $app := .Values.apps.awsNodeTerminationHandler -}}
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
@@ -6,10 +7,11 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
+    bundle.giantswarm.io/member-chart: {{ $app.chartName }}
 spec:
-  url: {{ .Values.ociRepositoryUrl }}
+  url: {{ .Values.ociRepositoryUrl | default (printf "oci://gsoci.azurecr.io/charts/giantswarm/%s" $app.chartName) }}
   ref:
-    tag: {{ .Chart.AppVersion }}
+    tag: {{ $app.version | quote }}
   interval: 24h
   timeout: 60s
 ---
