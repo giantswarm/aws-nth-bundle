@@ -17,12 +17,12 @@
                         "version": {
                             "type": "string"
                         }
-                    }
+                    },
+                    "required": [
+                        "chartName"
+                    ]
                 }
             }
-        },
-        "ociRepositoryUrl": {
-            "type": "string"
         },
         "clusterID": {
             "type": "string"
@@ -48,7 +48,9 @@
                                 "type": "string"
                             }
                         },
-                        "required": ["name"]
+                        "required": [
+                            "name"
+                        ]
                     }
                 }
             }

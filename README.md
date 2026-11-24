@@ -9,7 +9,7 @@ Here we define the `aws-nth-bundle` and `aws-node-termination-handler` charts wi
 
 | Term | Where it lives | What it does |
 |------|---------------|--------------|
-| **BUNDLE-ONLY** | Management cluster only | Never forwarded to workload chart. Examples: `clusterID`, `apps` (chart name and version of the workload chart; `ociRepositoryUrl` is a deprecated URL override) |
+| **BUNDLE-ONLY** | Management cluster only | Never forwarded to workload chart. Examples: `clusterID`, `apps` (chart name and version of the workload chart; an empty `version` falls back to the chart `appVersion`) |
 | **UPSTREAM** | Workload cluster, under `upstream:` key | Routed to the unmodified upstream subchart. Controls the actual NTH application: image, replicas, service account, SQS settings, etc. |
 | **EXTRAS** | Workload cluster, at top level (not under `upstream:`) | Consumed by GS extras templates: `networkPolicy`, `verticalPodAutoscaler`, etc. |
 

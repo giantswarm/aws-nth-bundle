@@ -9,9 +9,9 @@ metadata:
     {{- include "aws-nth-bundle.labels" $ | nindent 4 }}
     bundle.giantswarm.io/member-chart: {{ $app.chartName }}
 spec:
-  url: {{ .Values.ociRepositoryUrl | default (printf "oci://gsoci.azurecr.io/charts/giantswarm/%s" $app.chartName) }}
+  url: oci://gsoci.azurecr.io/charts/giantswarm/{{ $app.chartName }}
   ref:
-    tag: {{ $app.version | quote }}
+    tag: {{ $app.version | default $.Chart.AppVersion | quote }}
   interval: 24h
   timeout: 60s
 ---
