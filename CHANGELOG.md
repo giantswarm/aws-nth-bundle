@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix the broken upstream chart link in the README: the chart moved from `aws/eks-charts` to `aws/aws-node-termination-handler`.
+- The `helm.sh/chart` label is valid for long chart versions: the 63-character cut trims the whole trailing run of `-`, `.` and `_`.
+
 ### Added
 
 - Label the member `OCIRepository` with `bundle.giantswarm.io/member-chart: aws-node-termination-handler`, so a reservation can find it.
 
 ### Changed
 
-- Breaking: `ociRepositoryUrl` is removed in favour of `apps.awsNodeTerminationHandler` (`chartName`, `version`), like the other bundles. The OCI URL is now derived from `chartName` (`oci://gsoci.azurecr.io/charts/giantswarm/<chartName>`), so a value that pointed to another registry or path needs another way to be set.
+- Run the E2E test suites automatically on release PRs by adding `.github/release-pr-body.md`.
+- Replace `ociRepositoryUrl` with `apps.awsNodeTerminationHandler` (`chartName`, `version`), like the other bundles. The OCI URL is now derived from `chartName` (`oci://gsoci.azurecr.io/charts/giantswarm/<chartName>`), so a value that pointed to another registry or path needs another way to be set.
 - The tag comes from `apps.awsNodeTerminationHandler.version`, which falls back to the chart `appVersion` when empty (the default), so releases keep moving the tag as before. The rendered `OCIRepository` is otherwise unchanged.
 
 ## [2.1.1] - 2026-07-21
