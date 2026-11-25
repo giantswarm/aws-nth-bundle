@@ -1,3 +1,4 @@
+{{- if and .Values.kyvernoPolicyExceptions.enabled .Values.kyvernoPolicyExceptions.legacy.enabled }}
 apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
@@ -5,6 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aws-node-termination-handler.labels" . | nindent 4 }}
+    policy.giantswarm.io/migrated-to-cel: "true"
 spec:
   exceptions:
   - policyName: disallow-host-path
@@ -24,3 +26,4 @@ spec:
         - {{ .Release.Name }}-aws-node-termination-handler-*
         kinds:
         - Pod
+{{- end }}
