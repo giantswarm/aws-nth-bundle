@@ -1,4 +1,10 @@
-ociRepositoryUrl: oci://gsoci.azurecr.io/charts/giantswarm/aws-node-termination-handler
+# Chart deployed by the bundle, in the same shape as the other bundles. The OCIRepository
+# URL is oci://gsoci.azurecr.io/charts/giantswarm/<chartName>. The tag is `version`; when
+# empty it is the bundle chart's appVersion, which releases keep updating.
+apps:
+  awsNodeTerminationHandler:
+    chartName: aws-node-termination-handler
+    version: ""
 clusterID: ""
 managementCluster: ""
 region: ""

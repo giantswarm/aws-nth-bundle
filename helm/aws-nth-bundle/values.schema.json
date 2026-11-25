@@ -3,8 +3,26 @@
     "type": "object",
     "additionalProperties": true,
     "properties": {
-        "ociRepositoryUrl": {
-            "type": "string"
+        "apps": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "awsNodeTerminationHandler": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "properties": {
+                        "chartName": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "chartName"
+                    ]
+                }
+            }
         },
         "clusterID": {
             "type": "string"
@@ -30,7 +48,9 @@
                                 "type": "string"
                             }
                         },
-                        "required": ["name"]
+                        "required": [
+                            "name"
+                        ]
                     }
                 }
             }
